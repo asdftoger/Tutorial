@@ -1,0 +1,52 @@
+#A new file for GitHub test.
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Feb 20 10:53:16 2017
+
+@author: John
+"""
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import sys
+import scipy.misc as misc
+#==============================================================================
+# This program will produce the outline of an image
+#==============================================================================
+FILE = 'dog.png'
+
+img = misc.imread(FILE).astype('float32')
+#5sys.exit()
+#img = img[::2][::2]
+img *= 1.0/255.0
+#img[axis0][axis1][axis2]
+#subtract img[:][:][0:3], do not subtract 255s
+shapea0,shapea1,shapea2= img.shape
+imgb = np.zeros(img.shape)
+if shapea2 == 4:
+    for a0 in range(shapea0):
+        for a1 in range(shapea1):
+            imgb[a0][a1][3] = 1.0
+
+plt.imshow(img)
+plt.show()
+#sys.exit()
+#img[0][2][2] -= img[0][1][2]
+
+#Was not working previously because the fromat was uint8
+for a0 in range(shapea0):
+    for a1 in range(shapea1):
+        for a2 in range(3):
+            #Subtract every pixel from its neighbour on the left,
+#            imgb[a0][a1][a2]= max(0,img[a0][a1][a2] - img[a0][a1-1][a2])
+            #Do the same thing but take the absolute value
+            imgb[a0][a1][a2]= np.abs(img[a0][a1][a2] - img[a0][a1-1][a2])
+
+for a1 in range(shapea1):
+    for a0 in range(shapea0):
+        for a2 in range(3):
+            imgb[a0][a1][a2]+= np.abs(img[a0][a1][a2] - img[a0-1][a1][a2])
+
+plt.imshow(imgb)
+#Success??
+plt.show()
